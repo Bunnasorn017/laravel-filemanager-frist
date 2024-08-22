@@ -15,6 +15,11 @@ class FileController extends Controller
         return view('dashboard', compact('files'));
     }
 
+    public function indexsearch() {
+        $files = auth()->user()->files;
+        return view('search', compact('files'));
+    }
+
     public function upload(Request $req)
     {
         $req->validate([

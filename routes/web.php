@@ -25,6 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('/dashboard/files/{file}/rename', [FileController::class, 'rename'])->name('files.rename');
     Route::delete('/dashboard/files/{file}', [FileController::class, 'delete'])->name('files.delete');
     Route::get('/files/{file}/download', [FileController::class, 'download'])->name('files.download');
+    Route::get('/dashboard/search', [FileController::class, 'indexsearch'])->name('search');
 });
 
 Route::middleware('auth')->group(function () {
