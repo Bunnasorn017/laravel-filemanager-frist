@@ -1,6 +1,7 @@
 <x-app-layout>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var searchInput = document.querySelector('input[type="text"]');
@@ -69,12 +70,12 @@
                                                         <i class="fas fa-download">Dowload</i>
                                                     </a>
                                                     <form action="{{ route('files.delete', $file) }}" method="POST"
-                                                        onsubmit="return confirm('Are you sure?');" class="inline">
+                                                        class="inline delete-form">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit"
-                                                            class="px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
-                                                            <i class="fas fa-trash">Delete</i>
+                                                        <button type="button"
+                                                            class="delete-btn px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                                                            Delete
                                                         </button>
                                                     </form>
                                                 </div>
@@ -91,6 +92,32 @@
                             </table>
                         </div>
                     </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            document.querySelectorAll('.delete-btn').forEach(button => {
+                                button.addEventListener('click', function(event) {
+                                    event.preventDefault();
+                                    const form = this.closest('.delete-form');
+
+                                    Swal.fire({
+                                        title: "คุณแน่ใจว่าจะลบไฟล์นี้หรือไม่?",
+                                        text: "การกระทำนี้ไม่สามารถย้อนกลับได้!",
+                                        icon: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonColor: "#3085d6",
+                                        cancelButtonColor: "#d33",
+                                        confirmButtonText: "ใช่, ลบเลย!",
+                                        cancelButtonText: "ยกเลิก"
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            form.submit();
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    </script>
 
                 </div>
             </div>

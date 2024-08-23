@@ -1,5 +1,6 @@
 <x-guest-layout>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- สถานะการเซสชัน -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -69,5 +70,14 @@
                 </a>
             </div>
         </form>
+        @if ($errors->any())
+            <script>
+                Swal.fire({
+                    icon: "error",
+                    title: "Something Worng!",
+                    text: "Email หรือ Password ไม่ถูกต้อง",
+                });
+            </script>
+        @endif
     </div>
 </x-guest-layout>
