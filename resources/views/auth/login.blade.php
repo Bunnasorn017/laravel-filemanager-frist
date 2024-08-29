@@ -1,83 +1,85 @@
-<x-guest-layout>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB Files Manage - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- สถานะการเซสชัน -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
-    <div class="mb-6">
-        <div class="flex justify-center mb-3">
-            <img src="{{ asset('logo.png') }}" alt="logo" width="300px" height="300px">
-        </div>
-
-        <hr class="border-solid border-1 border-black">
-
-        <h1 class="text-2xl font-bold text-gray-800 mt-4 text-center">WEB Files Manage</h1>
-        <p class="text-gray-600 mt-2 text-center">Please log in to manage your files</p>
-
-        <form method="POST" action="{{ route('login') }}" class="bg-white p-8 max-w-md mx-auto">
-            @csrf
-
-            <!-- อีเมล -->
-            <div>
-                <x-input-label for="email" :value="__('Email')" class="text-gray-800 font-semibold" />
-                <x-text-input id="email"
-                    class="block mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 transition-transform transform hover:scale-105"
-                    type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1497864149936-d3163f0c0f4b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 opacity-20"></div>
+        <div class="relative z-10">
+            <div class="flex justify-center mb-6">
+                <img src="{{ asset('logo.png') }}" alt="logo" class="w-32 h-32 object-contain">
             </div>
+            
+            <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">WEB Files Manage</h1>
+            <p class="text-gray-600 mb-6 text-center">Please log in to manage your files</p>
+            
+            <form method="POST" action="{{ route('login') }}" class="space-y-6">
+                @csrf
+                
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input id="email" type="email" name="email" required autofocus autocomplete="username"
+                           class="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                                  focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                                  transition duration-150 ease-in-out">
+                    @error('email')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <!-- รหัสผ่าน -->
-            <div class="mt-4">
-                <x-input-label for="password" :value="__('Password')" class="text-gray-800 font-semibold" />
-                <x-text-input id="password"
-                    class="block mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-indigo-500 transition-transform transform hover:scale-105"
-                    type="password" name="password" required autocomplete="current-password" />
-                <x-input-error :messages="$errors->get('password')" class="mt-2 text-red-500" />
-            </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                    <input id="password" type="password" name="password" required autocomplete="current-password"
+                           class="mt-1 block w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-md text-sm shadow-sm placeholder-gray-400
+                                  focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
+                                  transition duration-150 ease-in-out">
+                    @error('password')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
-            <!-- จดจำฉัน -->
-            {{-- <div class="block mt-4">
-                <label for="remember_me" class="inline-flex items-center">
-                    <input id="remember_me" type="checkbox"
-                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500 transition-transform transform hover:scale-105"
-                        name="remember">
-                    <span class="ms-2 text-sm text-gray-800">{{ __('Remember me') }}</span>
-                </label>
-            </div> --}}
+                <div>
+                    <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
+                        Log in
+                    </button>
+                </div>
+            </form>
 
-            <!-- ลืมรหัสผ่านและปุ่มเข้าสู่ระบบ -->
-            {{-- <div class="flex items-center justify-between mt-6">
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-indigo-600 hover:text-indigo-800 transition-colors duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
-                    </a>
-                @endif --}}
-
-            <div class="flex justify-center mt-4">
-                <x-primary-button
-                    class="items-center justify-center ms-3 bg-indigo-600 hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 mt-3 text-center">
-                    {{ __('Log in') }}
-                </x-primary-button>
-            </div>
-
-            <!-- Don't have an account? Register -->
             <div class="mt-6 text-center">
-                <span class="text-gray-800">Don't have an account?</span>
-                <a class="text-indigo-600 hover:text-indigo-800 transition-colors duration-200 underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    href="{{ route('register') }}">
-                    {{ __('Register!') }}
-                </a>
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <a href="{{ route('register') }}" class="font-medium text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out">
+                        Register now
+                    </a>
+                </p>
             </div>
-        </form>
-        @if ($errors->any())
-            <script>
-                Swal.fire({
-                    icon: "error",
-                    title: "Something Worng!",
-                    text: "Email หรือ Password ไม่ถูกต้อง",
-                });
-            </script>
-        @endif
+        </div>
     </div>
-</x-guest-layout>
+
+    @if ($errors->any())
+    <script>
+        Swal.fire({
+            icon: "error",
+            title: "Something Wrong!",
+            text: "Email หรือ Password ไม่ถูกต้อง",
+            confirmButtonColor: '#4F46E5',
+        });
+    </script>
+    @endif
+</body>
+</html>
