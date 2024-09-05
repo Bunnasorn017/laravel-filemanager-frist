@@ -15,27 +15,35 @@ class FileController extends Controller
         return view('dashboard', compact('files'));
     }
 
-    public function indexsearch() {
+    public function indexsearch()
+    {
         $files = auth()->user()->files;
         return view('search', compact('files'));
     }
 
-    public function upload(Request $req)
+    public function upload(Request $request)
     {
-        $req->validate([
-            'file' => 'required|mimes:png,jpg,pdf,doc,docx,gif,bmp,jpeg,xls,pptx,mp4,mp3,avif,css,ico,jar,js,mpeg,ppt,rar,svg,txt,weba,webm,webp,xlsx,zip,php,html,exe,sql|max:30720',
+        $request->validate([
+            'files' => 'required|array',
+            'files.*' => 'required|mimes:png,jpg,pdf,doc,docx,gif,bmp,jpeg,xls,pptx,mp4,mp3,avif,css,ico,jar,js,mpeg,ppt,rar,svg,txt,weba,webm,webp,xlsx,zip,php,html,exe,sql|max:30720',
         ]);
 
-        $file = $req->file('file');
-        $path = $file->store('user_files/' . auth()->id());
+        $uploadedFiles = [];
 
-        auth()->user()->files()->create([
-            'name' => $file->getClientOriginalName(),
-            'path' => $path,
-            'mime_type' => $file->getMimeType(),
-            'size' => $file->getSize()
-        ]);
-        return redirect()->back()->with('success', 'File upload successfully.');
+        foreach ($request->file('files') as $file) {
+            $path = $file->store('user_files/' . auth()->id());
+
+            $uploadedFile = auth()->user()->files()->create([
+                'name' => $file->getClientOriginalName(),
+                'path' => $path,
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize()
+            ]);
+
+            $uploadedFiles[] = $uploadedFile;
+        }
+
+        return redirect()->back()->with('success', count($uploadedFiles) . ' file(s) uploaded successfully.');
     }
 
     public function rename(Request $request, File $file)
@@ -61,7 +69,7 @@ class FileController extends Controller
         Storage::delete($file->path);
         $file->delete();
 
-        return redirect()->back()->with('success', 'File Has Been Delete.');
+        return redirect()->back()->with('success', 'File Has Been Deleted.');
     }
 
     public function download(File $file)
