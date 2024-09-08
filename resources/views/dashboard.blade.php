@@ -9,6 +9,22 @@
         </h2>
     </x-slot>
 
+
+
+    <form action="{{ route('files.create-folder') }}" method="POST" class="mb-6">
+        @csrf
+        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
+            <div class="flex-grow mr-4">
+                <input type="text" name="folder_name" placeholder="Enter folder name"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <button type="submit"
+                class="px-6 py-3 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                <i class="fas fa-folder-plus mr-2"></i>Create Folder
+            </button>
+        </div>
+    </form>
+
     <div class="py-12 bg-gray-100">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
@@ -16,21 +32,26 @@
                     <h3 class="text-2xl font-bold mb-6 text-gray-800">{{ __('File Manager') }}</h3>
 
                     <!-- File Upload Form -->
-                    <form action="{{ route('files.upload') }}" method="POST" enctype="multipart/form-data" class="mb-8" id="file-upload-form">
+                    <form action="{{ route('files.upload') }}" method="POST" enctype="multipart/form-data"
+                        class="mb-8" id="file-upload-form" onsubmit="return validateForm()">
                         @csrf
                         <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
                             <div class="flex-grow mr-4">
-                                <label for="file-upload" class="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+                                <label for="file-upload"
+                                    class="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
                                     <span class="flex items-center space-x-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                         </svg>
                                         <span class="font-medium text-gray-600">
                                             Drop files to Attach, or
                                             <span class="text-blue-600 underline">browse</span>
                                         </span>
                                     </span>
-                                    <input id="file-upload" name="files[]" type="file" class="hidden" multiple onchange="updateFileList(this)" />
+                                    <input id="file-upload" name="files[]" type="file" class="hidden" multiple
+                                        onchange="updateFileList(this)" />
                                 </label>
                                 <div id="file-list" class="mt-2 text-sm text-gray-500"></div>
                             </div>
@@ -40,10 +61,22 @@
                         </div>
                     </form>
 
+                    @if (session('success'))
+                        <script>
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Upload Successful',
+                                text: "{{ session('success') }}",
+                                confirmButtonText: 'OK'
+                            });
+                        </script>
+                    @endif
+
                     <!-- File List -->
                     <div class="space-y-6">
                         @foreach ($files as $file)
-                            <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-200">
+                            <div
+                                class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-200">
                                 <div class="flex items-center justify-between p-6">
                                     <div class="flex items-center space-x-4">
                                         <div class="flex-shrink-0">
@@ -55,16 +88,20 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center space-x-3">
-                                        <a href="{{ route('files.download', $file) }}" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                        <a href="{{ route('files.download', $file) }}"
+                                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                                             <i class="fas fa-download mr-2"></i>Download
                                         </a>
-                                        <button onclick="renameFile({{ $file->id }}, '{{ $file->name }}')" class="px-4 py-2 text-sm font-medium text-green-600 bg-green-100 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                                        <button onclick="renameFile({{ $file->id }}, '{{ $file->name }}')"
+                                            class="px-4 py-2 text-sm font-medium text-green-600 bg-green-100 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
                                             <i class="fas fa-edit mr-2"></i>Rename
                                         </button>
-                                        <form action="{{ route('files.delete', $file) }}" method="POST" class="inline delete-form">
+                                        <form action="{{ route('files.delete', $file) }}" method="POST"
+                                            class="inline delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" class="delete-btn px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                                            <button type="button"
+                                                class="delete-btn px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
                                                 <i class="fas fa-trash-alt mr-2"></i>Delete
                                             </button>
                                         </form>
@@ -97,7 +134,9 @@
             const nameWithoutExtension = currentName.split('.').slice(0, -1).join('.');
             const extension = currentName.split('.').pop();
 
-            const { value: newName } = await Swal.fire({
+            const {
+                value: newName
+            } = await Swal.fire({
                 title: 'Rename File',
                 input: 'text',
                 inputLabel: 'New file name',
@@ -177,29 +216,109 @@
                 });
             });
         });
+
+        function validateForm() {
+            const fileInput = document.getElementById('file-upload');
+            const errorMessage = document.getElementById('error-message');
+
+            // Check if no files are selected
+            if (fileInput.files.length === 0) {
+                errorMessage.textContent = "Please select at least one file to upload.";
+                errorMessage.classList.remove('hidden');
+                return false; // Prevent form submission
+            }
+
+            errorMessage.classList.add('hidden');
+            return true; // Allow form submission
+        }
+
+        function updateFileList(input) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = ""; // Clear previous file list
+
+            if (input.files.length > 0) {
+                const list = document.createElement('ul');
+                for (let i = 0; i < input.files.length; i++) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = input.files[i].name;
+                    list.appendChild(listItem);
+                }
+                fileList.appendChild(list);
+            } else {
+                fileList.textContent = "No files selected.";
+            }
+        }
+    </script>
+
+    <script>
+        function validateForm() {
+            const fileInput = document.getElementById('file-upload');
+
+            // Check if no files are selected
+            if (fileInput.files.length === 0) {
+                // Trigger SweetAlert2 warning
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'No Files Selected',
+                    text: 'Please select at least one file to upload.',
+                    confirmButtonText: 'OK'
+                });
+
+                return false; // Prevent form submission
+            }
+
+            return true; // Allow form submission
+        }
+
+        function updateFileList(input) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = ""; // Clear previous file list
+
+            if (input.files.length > 0) {
+                const list = document.createElement('ul');
+                for (let i = 0; i < input.files.length; i++) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = input.files[i].name;
+                    list.appendChild(listItem);
+                }
+                fileList.appendChild(list);
+            } else {
+                fileList.textContent = "No files selected.";
+            }
+        }
     </script>
 
     <style>
         /* SweetAlert2 Custom Styles */
-        .rename-swal-popup, .delete-swal-popup {
+        .rename-swal-popup,
+        .delete-swal-popup {
             font-family: 'Arial', sans-serif;
             border-radius: 15px;
         }
-        .rename-swal-title, .delete-swal-title {
+
+        .rename-swal-title,
+        .delete-swal-title {
             color: #4a5568;
         }
-        .rename-swal-content, .delete-swal-content {
+
+        .rename-swal-content,
+        .delete-swal-content {
             color: #718096;
         }
+
         .rename-swal-input {
             border: 1px solid #e2e8f0;
             border-radius: 5px;
             padding: 10px;
         }
-        .rename-swal-confirm, .delete-swal-confirm {
+
+        .rename-swal-confirm,
+        .delete-swal-confirm {
             background-color: #4299e1 !important;
         }
-        .rename-swal-cancel, .delete-swal-cancel {
+
+        .rename-swal-cancel,
+        .delete-swal-cancel {
             background-color: #cbd5e0 !important;
             color: #4a5568 !important;
         }

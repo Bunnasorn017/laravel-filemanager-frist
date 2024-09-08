@@ -82,4 +82,19 @@ class FileController extends Controller
 
         return Storage::download($file->path, $file->name);
     }
+
+    public function createFolder(Request $request)
+    {
+        $request->validate([
+            'folder_name' => 'required|string|max:255',
+        ]);
+
+        $folderPath = 'user_files/' . auth()->id() . '/' . $request->folder_name;
+
+        if (!Storage::exists($folderPath)) {
+            Storage::makeDirectory($folderPath);
+        }
+
+        return redirect()->back()->with('success', 'Folder created successfully.');
+    }
 }
