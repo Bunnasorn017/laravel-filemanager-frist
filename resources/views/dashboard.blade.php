@@ -8,12 +8,12 @@
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
-                        Welcome to FileManager : {{ Auth::user()->name }}!
+                        ยินดีต้อนรับเข้าสู่ FileManager : คุณ {{ Auth::user()->name }}
                     </h2>
-                    <p class="text-center text-lg text-gray-600 mb-8">
-                        You have Files uploaded <span class="font-semibold text-blue-600">{{ $filescount }}</span>
-                        files
-                    </p>
+                        <p class="text-center text-lg text-gray-600 mb-8 mt-9">
+                            You have Files uploaded <span class="font-semibold text-blue-600">{{ $filescount }}</span>
+                            files
+                        </p>
 
                     <!-- Create Folder Form -->
                     {{-- <form action="{{ route('files.create-folder') }}" method="POST" class="mb-8">
@@ -46,8 +46,8 @@
                                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                         </svg>
                                         <span class="font-medium text-gray-600 text-lg">
-                                            Drop files to Attach, or
-                                            <span class="text-blue-600 underline">browse</span>
+                                            Insert files form your devices, 
+                                            <span class="text-blue-600 underline">Here!</span>
                                         </span>
                                     </span>
                                     <input id="file-upload" name="files[]" type="file" class="hidden" multiple

@@ -60,7 +60,7 @@
                                 <th class="py-3 px-6 text-center">การดำเนินการ</th>
                             </tr>
                         </thead>
-                        <tbody class="text-gray-600 text-sm font-light">
+                        <tbody class="text-black text-md font-normal">
                             @forelse ($files as $file)
                                 <tr class="border-b border-gray-200 hover:bg-gray-100 transition duration-300"
                                     x-show="'{{ strtolower($file->name) }}'.includes(searchTerm.toLowerCase())">
