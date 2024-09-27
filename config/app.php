@@ -212,4 +212,8 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    'page_titles' => [
+        'dashboard' => 'Dashboard',
+        'search' => 'Search Files',
+    ],
 ];

@@ -12,7 +12,8 @@ class FileController extends Controller
     public function index()
     {
         $files = auth()->user()->files;
-        return view('dashboard', compact('files'));
+        $filescount = auth()->user()->files->count();
+        return view('dashboard', compact('files','filescount'));
     }
 
     public function indexsearch()
@@ -27,6 +28,7 @@ class FileController extends Controller
             'files' => 'required|array',
             'files.*' => 'required|mimes:png,jpg,pdf,doc,docx,gif,bmp,jpeg,xls,pptx,mp4,mp3,avif,css,ico,jar,js,mpeg,ppt,rar,svg,txt,weba,webm,webp,xlsx,zip,php,html,exe,sql|max:30720',
         ]);
+        $fileCount = count($request->file('files'));
 
         $uploadedFiles = [];
 
@@ -42,7 +44,7 @@ class FileController extends Controller
 
             $uploadedFiles[] = $uploadedFile;
         }
-
+        return redirect()->back()->with('upload_success', $fileCount);
         return redirect()->back()->with('success', count($uploadedFiles) . ' file(s) uploaded successfully.');
     }
 

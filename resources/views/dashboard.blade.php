@@ -2,50 +2,50 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
-
-    <x-slot name="header">
-        <h2 class="font-semibold text-2xl text-gray-800 leading-tight text-center">
-            Welcome to FileManager, {{ Auth::user()->name }}!
-        </h2>
-    </x-slot>
-
-
-
-    <form action="{{ route('files.create-folder') }}" method="POST" class="mb-6">
-        @csrf
-        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
-            <div class="flex-grow mr-4">
-                <input type="text" name="folder_name" placeholder="Enter folder name"
-                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-            </div>
-            <button type="submit"
-                class="px-6 py-3 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
-                <i class="fas fa-folder-plus mr-2"></i>Create Folder
-            </button>
-        </div>
-    </form>
-
-    <div class="py-12 bg-gray-100">
+    @section('title', config('app.page_titles.dashboard'))
+    <div class="py-12 bg-gray-100 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <h3 class="text-2xl font-bold mb-6 text-gray-800">{{ __('File Manager') }}</h3>
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
+                        Welcome to FileManager : {{ Auth::user()->name }}!
+                    </h2>
+                    <p class="text-center text-lg text-gray-600 mb-8">
+                        You have Files uploaded <span class="font-semibold text-blue-600">{{ $filescount }}</span>
+                        files
+                    </p>
+
+                    <!-- Create Folder Form -->
+                    {{-- <form action="{{ route('files.create-folder') }}" method="POST" class="mb-8">
+                        @csrf
+                        <div
+                            class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                            <div class="flex-grow mr-4">
+                                <input type="text" name="folder_name" placeholder="Enter folder name"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300">
+                            </div>
+                            <button type="submit"
+                                class="px-6 py-3 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:-translate-y-1">
+                                <i class="fas fa-folder-plus mr-2"></i>Create Folder
+                            </button>
+                        </div>
+                    </form> --}}
 
                     <!-- File Upload Form -->
-                    <form action="{{ route('files.upload') }}" method="POST" enctype="multipart/form-data"
-                        class="mb-8" id="file-upload-form" onsubmit="return validateForm()">
+                    <form action="{{ route('files.upload') }}" method="POST" enctype="multipart/form-data" class="mb-8"
+                        id="file-upload-form" onsubmit="return validateForm()">
                         @csrf
-                        <div class="flex items-center justify-between bg-gray-50 p-4 rounded-lg shadow">
-                            <div class="flex-grow mr-4">
+                        <div class="bg-gray-50 p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                            <div class="mb-4">
                                 <label for="file-upload"
-                                    class="flex flex-col items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+                                    class="flex flex-col items-center justify-center w-full h-40 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-lg appearance-none cursor-pointer hover:border-blue-400 focus:outline-none">
                                     <span class="flex items-center space-x-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600"
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-600"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                         </svg>
-                                        <span class="font-medium text-gray-600">
+                                        <span class="font-medium text-gray-600 text-lg">
                                             Drop files to Attach, or
                                             <span class="text-blue-600 underline">browse</span>
                                         </span>
@@ -53,55 +53,58 @@
                                     <input id="file-upload" name="files[]" type="file" class="hidden" multiple
                                         onchange="updateFileList(this)" />
                                 </label>
-                                <div id="file-list" class="mt-2 text-sm text-gray-500"></div>
                             </div>
-                            <x-primary-button type="submit" class="px-6 py-3">
-                                <i class="fas fa-cloud-upload-alt mr-2"></i>{{ __('Upload') }}
-                            </x-primary-button>
+                            <div id="file-list" class="mt-4 text-sm text-gray-500"></div>
+                            <div class="mt-4 flex justify-center">
+                                <button type="submit"
+                                    class="px-6 py-3 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-300 ease-in-out transform hover:-translate-y-1">
+                                    <i class="fas fa-cloud-upload-alt mr-2"></i>{{ __('Upload') }}
+                                </button>
+                            </div>
                         </div>
                     </form>
 
-                    @if (session('success'))
+                    @if (session('upload_success'))
                         <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Upload Successful',
-                                text: "{{ session('success') }}",
-                                confirmButtonText: 'OK'
+                            document.addEventListener('DOMContentLoaded', function() {
+                                showUploadSuccess({{ session('upload_success') }});
                             });
                         </script>
                     @endif
 
                     <!-- File List -->
-                    <div class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach ($files as $file)
                             <div
-                                class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-200">
-                                <div class="flex items-center justify-between p-6">
-                                    <div class="flex items-center space-x-4">
-                                        <div class="flex-shrink-0">
+                                class="bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 ease-in-out transform hover:-translate-y-1 border border-gray-200 overflow-hidden">
+                                <div class="p-6">
+                                    <div class="flex items-center mb-4">
+                                        <div class="flex-shrink-0 mr-4">
                                             <i class="far fa-file-alt text-4xl text-blue-500"></i>
                                         </div>
-                                        <div>
-                                            <p class="text-lg font-semibold text-gray-900">{{ $file->name }}</p>
+                                        <div class="flex-grow min-w-0">
+                                            <p class="text-lg font-semibold text-gray-900 truncate"
+                                                title="{{ $file->name }}">
+                                                {{ $file->name }}
+                                            </p>
                                             <p class="text-sm text-gray-600">{{ $file->formatted_size }}</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-center space-x-3">
+                                    <div class="flex flex-col space-y-2">
                                         <a href="{{ route('files.download', $file) }}"
-                                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
+                                            class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out flex items-center justify-center">
                                             <i class="fas fa-download mr-2"></i>Download
                                         </a>
                                         <button onclick="renameFile({{ $file->id }}, '{{ $file->name }}')"
-                                            class="px-4 py-2 text-sm font-medium text-green-600 bg-green-100 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                                            class="w-full px-4 py-2 text-sm font-medium text-green-600 bg-green-100 rounded-md hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out flex items-center justify-center">
                                             <i class="fas fa-edit mr-2"></i>Rename
                                         </button>
                                         <form action="{{ route('files.delete', $file) }}" method="POST"
-                                            class="inline delete-form">
+                                            class="w-full delete-form">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button"
-                                                class="delete-btn px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                                                class="w-full delete-btn px-4 py-2 text-sm font-medium text-red-600 bg-red-100 rounded-md hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out flex items-center justify-center">
                                                 <i class="fas fa-trash-alt mr-2"></i>Delete
                                             </button>
                                         </form>
@@ -137,9 +140,9 @@
             const {
                 value: newName
             } = await Swal.fire({
-                title: 'Rename File',
+                title: 'เปลี่ยนชื่อไฟล์',
                 input: 'text',
-                inputLabel: 'New file name',
+                inputLabel: 'กรุณาเปลี่ยนชื่อไฟล์ใหม่',
                 inputValue: nameWithoutExtension,
                 showCancelButton: true,
                 inputValidator: (value) => {
@@ -189,8 +192,8 @@
                         text: "การกระทำนี้ไม่สามารถย้อนกลับได้!",
                         icon: "warning",
                         showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "##3085d6",
                         confirmButtonText: "ใช่, ลบเลย!",
                         cancelButtonText: "ยกเลิก",
                         customClass: {
@@ -210,27 +213,36 @@
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
+                            // ส่งฟอร์มเพื่อลบไฟล์
                             form.submit();
+
+                            // แสดงการแจ้งเตือนว่าไฟล์ถูกลบแล้ว
+                            Swal.fire({
+                                title: "ลบไฟล์เรียบร้อยแล้ว!",
+                                text: "ไฟล์ของคุณถูกลบออกจากระบบแล้ว",
+                                icon: "success",
+                                confirmButtonText: "ตกลง"
+                            });
                         }
                     });
                 });
             });
         });
 
-        function validateForm() {
-            const fileInput = document.getElementById('file-upload');
-            const errorMessage = document.getElementById('error-message');
+        // function validateForm() {
+        //     const fileInput = document.getElementById('file-upload');
+        //     const errorMessage = document.getElementById('error-message');
 
-            // Check if no files are selected
-            if (fileInput.files.length === 0) {
-                errorMessage.textContent = "Please select at least one file to upload.";
-                errorMessage.classList.remove('hidden');
-                return false; // Prevent form submission
-            }
+        //     // Check if no files are selected
+        //     if (fileInput.files.length === 0) {
+        //         errorMessage.textContent = "Please select at least one file to upload.";
+        //         errorMessage.classList.remove('hidden');
+        //         return false; // Prevent form submission
+        //     }
 
-            errorMessage.classList.add('hidden');
-            return true; // Allow form submission
-        }
+        //     errorMessage.classList.add('hidden');
+        //     return true; // Allow form submission
+        // }
 
         function updateFileList(input) {
             const fileList = document.getElementById('file-list');
@@ -259,15 +271,39 @@
                 // Trigger SweetAlert2 warning
                 Swal.fire({
                     icon: 'warning',
-                    title: 'No Files Selected',
-                    text: 'Please select at least one file to upload.',
-                    confirmButtonText: 'OK'
+                    title: 'ไม่มีไฟล์ที่ถูกเลือก',
+                    text: 'กรุณาเลือกไฟล์อย่างน้อยหนึ่งไฟล์เพื่ออัปโหลด',
+                    confirmButtonText: 'ตกลง'
                 });
 
                 return false; // Prevent form submission
             }
 
+            // If files are selected, show loading message
+            Swal.fire({
+                title: 'กำลังอัปโหลดไฟล์...',
+                text: 'กรุณารอสักครู่',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+            });
+
+            // Submit the form
+            document.getElementById('file-upload-form').submit();
+
             return true; // Allow form submission
+        }
+
+        // Add this function to show success message after upload
+        function showUploadSuccess(fileCount) {
+            Swal.fire({
+                icon: 'success',
+                title: 'อัปโหลดไฟล์สำเร็จ',
+                text: `อัปโหลดไฟล์จำนวน ${fileCount} ไฟล์เรียบร้อยแล้ว`,
+                confirmButtonText: 'ตกลง'
+            });
         }
 
         function updateFileList(input) {
