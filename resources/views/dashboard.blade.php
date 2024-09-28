@@ -10,10 +10,10 @@
                     <h2 class="text-3xl font-bold mb-6 text-gray-800 text-center">
                         ยินดีต้อนรับเข้าสู่ FileManager : คุณ {{ Auth::user()->name }}
                     </h2>
-                        <p class="text-center text-lg text-gray-600 mb-8 mt-9">
-                            You have Files uploaded <span class="font-semibold text-blue-600">{{ $filescount }}</span>
-                            files
-                        </p>
+                    <p class="text-center text-lg text-gray-600 mb-8 mt-9">
+                        You have Files uploaded <span class="font-semibold text-blue-600">{{ $filescount }}</span>
+                        files
+                    </p>
 
                     <!-- Create Folder Form -->
                     {{-- <form action="{{ route('files.create-folder') }}" method="POST" class="mb-8">
@@ -46,7 +46,7 @@
                                                 d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                         </svg>
                                         <span class="font-medium text-gray-600 text-lg">
-                                            Insert files form your devices, 
+                                            Insert files form your devices,
                                             <span class="text-blue-600 underline">Here!</span>
                                         </span>
                                     </span>
@@ -80,7 +80,106 @@
                                 <div class="p-6">
                                     <div class="flex items-center mb-4">
                                         <div class="flex-shrink-0 mr-4">
-                                            <i class="far fa-file-alt text-4xl text-blue-500"></i>
+                                            @php
+                                                $extension = strtolower(pathinfo($file->name, PATHINFO_EXTENSION));
+                                                $iconPath = 'images/file-icons/';
+
+                                                switch ($extension) {
+                                                    case 'gif':
+                                                        $iconPath .= 'gif.png';
+                                                        break;
+
+                                                    case 'svg':
+                                                        $iconPath .= 'svg.png';
+                                                        break;
+
+                                                    case 'sql':
+                                                        $iconPath .= 'sql.png';
+                                                        break;
+
+                                                    case 'pdf':
+                                                        $iconPath .= 'pdf.png';
+                                                        break;
+
+                                                    case 'doc':
+                                                    case 'docx':
+                                                        $iconPath .= 'word.png';
+                                                        break;
+
+                                                    case 'xls':
+                                                    case 'xlsx':
+                                                        $iconPath .= 'excel.png';
+                                                        break;
+
+                                                    case 'ppt':
+                                                    case 'pptx':
+                                                        $iconPath .= 'pptx.png';
+                                                        break;
+
+                                                    case 'jpg':
+                                                    case 'jpeg':
+                                                        $iconPath .= 'jpg.png';
+                                                        break;
+
+                                                    case 'png':
+                                                        $iconPath .= 'png.png';
+                                                        break;
+
+                                                    case 'zip':
+                                                        $iconPath .= 'zip.png';
+                                                        break;
+
+                                                    case 'rar':
+                                                        $iconPath .= 'winrar.png';
+                                                        break;
+
+                                                    case 'mp3':
+                                                    case 'wav':
+                                                    case 'ogg':
+                                                        $iconPath .= 'audio.png';
+                                                        break;
+
+                                                    case 'mp4':
+                                                    case 'avi':
+                                                    case 'mov':
+                                                        $iconPath .= 'mp4.png';
+                                                        break;
+
+                                                    case 'txt':
+                                                        $iconPath .= 'txt.png';
+                                                        break;
+
+                                                    case 'js':
+                                                        $iconPath .= 'js.png';
+                                                        break;
+
+                                                    case 'html':
+                                                        $iconPath .= 'html.png';
+                                                        break;
+
+                                                    case 'css':
+                                                        $iconPath .= 'css.png';
+                                                        break;
+
+                                                    case 'php':
+                                                        $iconPath .= 'php.png';
+                                                        break;
+
+                                                    case 'py':
+                                                        $iconPath .= 'py.png';
+                                                        break;
+
+                                                    case 'jar':
+                                                        $iconPath .= 'jar.png';
+                                                        break;
+
+                                                    default:
+                                                        $iconPath .= 'default.png';
+                                                        break;
+                                                }
+                                            @endphp
+                                            <img src="{{ asset($iconPath) }}" alt="{{ $extension }} file"
+                                                class="w-10 h-10">
                                         </div>
                                         <div class="flex-grow min-w-0">
                                             <p class="text-lg font-semibold text-gray-900 truncate"

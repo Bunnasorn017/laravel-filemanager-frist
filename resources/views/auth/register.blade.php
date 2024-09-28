@@ -13,7 +13,11 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md duration-300">
+    <video class="fixed right-0 bottom-0 min-w-full min-h-full w-auto h-auto object-cover -z-10" autoplay muted loop>
+        <source src="{{ asset('background/pixel-koi-pond.1920x1080.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md duration-300 opacity-90">
         <h1 class="text-3xl font-bold text-center text-gray-800 mb-2">Files Manage Register</h1>
         <p class="text-center text-gray-600 mb-8">Create your account and start managing your files</p>
 
@@ -70,7 +74,7 @@
 
         <div class="mt-8 text-center">
             <span class="text-sm text-gray-600">Already have an account?</span>
-            <a href="{{ route('login') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 ml-1 transition duration-150 ease-in-out">Log in</a>
+            <a href="{{ route('login') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500 ml-1 transition duration-150 ease-in-out">Login Here!</a>
         </div>
     </div>
 </body>
