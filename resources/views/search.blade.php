@@ -28,12 +28,84 @@
             background-color: #E5E7EB;
             color: #4B5563;
             display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .file-type:hover {
+            background-color: #D1D5DB;
+            transform: translateY(-2px);
+        }
+
+        .search-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right,
+                    rgba(255, 255, 255, 0) 0%,
+                    rgba(255, 255, 255, 0.8) 50%,
+                    rgba(255, 255, 255, 0) 100%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateY(-100%) translateX(-100%);
+            }
+
+            100% {
+                transform: translateY(100%) translateX(100%);
+            }
+        }
+
+        .table-row {
+            transition: all 0.3s ease;
+        }
+
+        .table-row:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-button {
+            transition: all 0.3s ease;
+        }
+
+        .action-button:hover {
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
         }
     </style>
 
-    <div class="py-12" x-data="{ searchTerm: '' }">
+    <div class="py-12" x-data="{ searchTerm: '', showNoResults: false }" x-init="() => {
+        $watch('searchTerm', value => {
+            showNoResults = value !== '' && !$refs.tableBody.querySelector('tr:not([style*=\'display: none\'])')
+        })
+    }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg mb-6">
+            <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg mb-6 search-container">
                 <div class="p-6">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-4">ค้นหาไฟล์ของคุณ</h2>
                     <div class="relative">
@@ -60,10 +132,16 @@
                                 <th class="py-3 px-6 text-center">การดำเนินการ</th>
                             </tr>
                         </thead>
-                        <tbody class="text-black text-md font-normal">
+                        <tbody class="text-black text-md font-normal" x-ref="tableBody">
                             @forelse ($files as $file)
-                                <tr class="border-b border-gray-200 hover:bg-gray-100 transition duration-300"
-                                    x-show="'{{ strtolower($file->name) }}'.includes(searchTerm.toLowerCase())">
+                                <tr class="table-row border-b border-gray-200 hover:bg-gray-100 transition duration-300 fade-in"
+                                    x-show="'{{ strtolower($file->name) }}'.includes(searchTerm.toLowerCase())"
+                                    style="display: none;" x-transition:enter="transition ease-out duration-300"
+                                    x-transition:enter-start="opacity-0 transform scale-90"
+                                    x-transition:enter-end="opacity-100 transform scale-100"
+                                    x-transition:leave="transition ease-in duration-300"
+                                    x-transition:leave-start="opacity-100 transform scale-100"
+                                    x-transition:leave-end="opacity-0 transform scale-90">
                                     <td class="py-3 px-6 text-left whitespace-normal">
                                         <div class="truncate-2">{{ $file->name }}</div>
                                     </td>
@@ -80,7 +158,7 @@
                                     <td class="py-3 px-6 text-center">
                                         <div class="flex item-center justify-center space-x-2">
                                             <a href="{{ route('files.download', $file) }}"
-                                                class="transform hover:scale-110 transition duration-300 flex items-center text-blue-600">
+                                                class="action-button transform hover:scale-110 transition duration-300 flex items-center text-blue-600">
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -94,7 +172,7 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button"
-                                                    class="delete-btn transform hover:scale-110 transition duration-300 flex items-center text-red-600">
+                                                    class="delete-btn action-button transform hover:scale-110 transition duration-300 flex items-center text-red-600">
                                                     <svg class="w-5 h-5" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -108,11 +186,17 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr x-show="searchTerm === ''">
+                                <tr x-show="searchTerm === ''" class="fade-in">
                                     <td colspan="5" class="py-3 px-6 text-center text-gray-500">ไม่พบไฟล์</td>
                                 </tr>
                             @endforelse
-                            <tr x-show="searchTerm !== '' && !$refs.tableBody.querySelector('tr[style=\'\']')">
+                            <tr x-show="showNoResults" class="fade-in"
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 transform scale-90"
+                                x-transition:enter-end="opacity-100 transform scale-100"
+                                x-transition:leave="transition ease-in duration-300"
+                                x-transition:leave-start="opacity-100 transform scale-100"
+                                x-transition:leave-end="opacity-0 transform scale-90">
                                 <td colspan="5" class="py-3 px-6 text-center text-gray-500">
                                     ไม่พบไฟล์ที่ตรงกับการค้นหา</td>
                             </tr>
@@ -156,10 +240,8 @@
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // ส่งฟอร์มเพื่อลบไฟล์
                             form.submit();
 
-                            // แสดงการแจ้งเตือนว่าไฟล์ถูกลบแล้ว
                             Swal.fire({
                                 title: "ลบไฟล์เรียบร้อยแล้ว!",
                                 text: "ไฟล์ของคุณถูกลบออกจากระบบแล้ว",
