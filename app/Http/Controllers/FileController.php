@@ -13,7 +13,7 @@ class FileController extends Controller
     {
         $files = auth()->user()->files;
         $filescount = auth()->user()->files->count();
-        return view('dashboard', compact('files','filescount'));
+        return view('dashboard', compact('files', 'filescount'));
     }
 
     public function indexsearch()
@@ -43,6 +43,15 @@ class FileController extends Controller
             ]);
 
             $uploadedFiles[] = $uploadedFile;
+
+            $totalSize = 0;
+            foreach ($request->file('files') as $file) {
+                $totalSize += $file->getSize();
+            }
+
+            if ($totalSize > 30 * 1024 * 1024) { // 30 MB in bytes
+                return redirect()->back()->with('error', 'Total file size exceeds 30 MB limit.');
+            }
         }
         return redirect()->back()->with('upload_success', $fileCount);
         return redirect()->back()->with('success', count($uploadedFiles) . ' file(s) uploaded successfully.');

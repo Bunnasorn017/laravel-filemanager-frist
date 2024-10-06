@@ -364,21 +364,37 @@
     <script>
         function validateForm() {
             const fileInput = document.getElementById('file-upload');
+            const maxSize = 30 * 1024 * 1024; // 30 MB in bytes
 
             // Check if no files are selected
             if (fileInput.files.length === 0) {
-                // Trigger SweetAlert2 warning
                 Swal.fire({
                     icon: 'warning',
                     title: 'ไม่มีไฟล์ที่ถูกเลือก',
                     text: 'กรุณาเลือกไฟล์อย่างน้อยหนึ่งไฟล์เพื่ออัปโหลด',
                     confirmButtonText: 'ตกลง'
                 });
-
                 return false; // Prevent form submission
             }
 
-            // If files are selected, show loading message
+            // Calculate total file size
+            let totalSize = 0;
+            for (let i = 0; i < fileInput.files.length; i++) {
+                totalSize += fileInput.files[i].size;
+            }
+
+            // Check if total size exceeds 30 MB
+            if (totalSize > maxSize) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ไม่สามารถอัปโหลดไฟล์ได้',
+                    text: 'ไฟล์ที่ถูกเลือกมานั้นมีขนาดหรือรวมกันมีขนาดเกิน 30 MB.',
+                    confirmButtonText: 'ตกลง'
+                });
+                return false; // Prevent form submission
+            }
+
+            // If files are selected and size is within limit, show loading message
             Swal.fire({
                 title: 'กำลังอัปโหลดไฟล์...',
                 text: 'กรุณารอสักครู่',

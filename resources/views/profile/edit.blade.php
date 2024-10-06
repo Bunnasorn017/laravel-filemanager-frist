@@ -1,4 +1,5 @@
 <x-app-layout>
+    @section('title', config('app.page_titles.edit'))
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Profile') }}

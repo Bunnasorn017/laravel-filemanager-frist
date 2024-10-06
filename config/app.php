@@ -215,5 +215,6 @@ return [
     'page_titles' => [
         'dashboard' => 'Dashboard',
         'search' => 'Search Files',
+        'edit' => 'Profile'
     ],
 ];
